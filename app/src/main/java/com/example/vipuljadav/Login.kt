@@ -17,11 +17,13 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_screen)
 
+        val email=findViewById<EditText>(R.id.email)
 
         val register1=findViewById<Button>(R.id.register1)
         register1.setOnClickListener {
-            intent = Intent(this, Registration::class.java)
+             val intent = Intent(this, Registration::class.java)
             startActivity(intent)
+            finish()
         }
 
         auth = FirebaseAuth.getInstance()
@@ -38,12 +40,11 @@ class Login : AppCompatActivity() {
                         if (task.isSuccessful) {
                             Toast.makeText(this, "login successfully", Toast.LENGTH_SHORT).show()
                             val intent=Intent(this,Home::class.java)
+                            intent.putExtra("email",email.text.toString())
                             startActivity(intent)
                             finish()
                         } else {
                             Toast.makeText(this, "wrong details", Toast.LENGTH_SHORT).show()
-                            email.text.clear()
-                            password.text.clear()
                         }
                     }
             }
