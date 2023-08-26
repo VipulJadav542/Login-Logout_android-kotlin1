@@ -56,7 +56,6 @@ class Registration : AppCompatActivity() {
                                         Users.document(email).set(user)
                                         Toast.makeText(this, "User added successfully,please login", Toast.LENGTH_SHORT).show()
                                         val intent=Intent(this,Login::class.java)
-                                        intent.putExtra("email",email)
                                         startActivity(intent)
                                         finish()
                                     } else
