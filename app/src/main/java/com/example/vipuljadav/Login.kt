@@ -1,5 +1,6 @@
 package com.example.vipuljadav
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -25,6 +26,16 @@ class Login : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+        val sharedpref=getSharedPreferences("mypre", Context.MODE_PRIVATE)
+        val email1=sharedpref.getString("email","")
+        val password=sharedpref.getString("password","")
+        if(email1 !="" && password !=" ")
+        {
+            val intent=Intent(this,Home::class.java)
+            startActivity(intent)
+            finish()
+        }
+
 
         auth = FirebaseAuth.getInstance()
 
@@ -33,14 +44,21 @@ class Login : AppCompatActivity() {
         login.setOnClickListener {
             if(Checking())
             {
-                val email=findViewById<EditText>(R.id.email)
-                val password=findViewById<EditText>(R.id.pwd)
-                auth.signInWithEmailAndPassword(email.text.toString(), password.text.toString())
+                val email=findViewById<EditText>(R.id.email).text.toString()
+                val password=findViewById<EditText>(R.id.pwd).text.toString()
+                auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "login successfully", Toast.LENGTH_SHORT).show()
+
+                            val sharedpref=getSharedPreferences("mypre", Context.MODE_PRIVATE)
+                            val editer=sharedpref.edit()
+                            editer.putString("email",email)
+                            editer.putString("password",password)
+                            editer.apply()
+
                             val intent=Intent(this,Home::class.java)
-                            intent.putExtra("email",email.text.toString())
+
                             startActivity(intent)
                             finish()
                         } else {

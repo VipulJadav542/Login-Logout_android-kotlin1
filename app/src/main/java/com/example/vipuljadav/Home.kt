@@ -11,55 +11,49 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 class Home : AppCompatActivity() {
-    private lateinit var db:FirebaseFirestore
+    private lateinit var db: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        val sharepref= this.getPreferences(Context.MODE_PRIVATE) ?:return
-        val isLogin=sharepref.getString("email","1")
+        val sharedpref=getSharedPreferences("mypre", Context.MODE_PRIVATE)
+        val isLogin = sharedpref.getString("email", "1")
 
-        if(isLogin=="1")
-        {
-            val email=intent.getStringExtra("email").toString()
+        if (isLogin == "1") {
+            val email = intent.getStringExtra("email").toString()
             setText(email)
-            with(sharepref.edit())
+            with(sharedpref.edit())
             {
                 putString("email", email)
                 apply()
             }
-        }
-        else
-        {
+        } else {
             setText(isLogin)
         }
 
-        val logout=findViewById<Button>(R.id.logout)
+        val logout = findViewById<Button>(R.id.logout)
         logout.setOnClickListener {
-            sharepref.edit().remove("email").apply()
+            sharedpref.edit().remove("email").apply()
             val intent = Intent(this, Login::class.java)
             startActivity(intent)
             finish()
         }
     }
 
-    private fun setText(email: String?)
-    {
+    private fun setText(email: String?) {
 
-        val uname=findViewById<TextView>(R.id.uname)
-        val mnumber=findViewById<TextView>(R.id.mnumber)
-        val email1=findViewById<TextView>(R.id.email)
-        db=FirebaseFirestore.getInstance()
-        if(email != null)
-        {
-        db.collection("USERS").document(email.toString()).get()
-            .addOnSuccessListener{
-                    tasks->
-                uname.text =tasks.get("Name").toString()
-                mnumber.text =tasks.get("Mobile").toString()
-                email1.text =tasks.get("email").toString()
-            }
+        val uname = findViewById<TextView>(R.id.uname)
+        val mnumber = findViewById<TextView>(R.id.mnumber)
+        val email1 = findViewById<TextView>(R.id.email)
+        db = FirebaseFirestore.getInstance()
+        if (email != null) {
+            db.collection("USERS").document(email.toString()).get()
+                .addOnSuccessListener { tasks ->
+                    uname.text = tasks.get("Name").toString()
+                    mnumber.text = tasks.get("Mobile").toString()
+                    email1.text = tasks.get("email").toString()
+                }
         }
     }
 }
